@@ -109,6 +109,7 @@ interface FederationObjectConfig<TContext> {
   // An array so you can add multiple @key(...) directives
   keyFields?: string[];
   extend?: boolean;
+  resolvable?: boolean;
   resolveReference?: GraphQLReferenceResolver<TContext>;
   fields?: FederationFieldsConfig;
 }
