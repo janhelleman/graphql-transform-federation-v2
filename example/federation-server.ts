@@ -1,7 +1,7 @@
 import { ServerInfo } from 'apollo-server';
 
 const { ApolloServer, gql } = require('apollo-server');
-const { buildFederatedSchema } = require('@apollo/federation');
+const { buildSubgraphSchema } = require('@apollo/federation');
 
 const typeDefs = gql`
   type Product @key(fields: "id") {
@@ -10,12 +10,17 @@ const typeDefs = gql`
     weight: Int
   }
 
+  type Category @key(fields: "id") {
+    id: ID!
+    name: String
+  }
+
   type Query {
     findProduct: Product!
   }
 `;
 
-interface ProductKey {
+interface CategoryKey {
   id: String;
 }
 
@@ -25,7 +30,19 @@ const product = {
   weight: 100,
 };
 
+const categories = [
+  {
+    id: '456',
+    name: 'mand',
+  },
+];
+
 const resolvers = {
+  Category: {
+    __resolveReference: ({ id }: CategoryKey) => {
+      return categories.find((item) => item.id == id);
+    },
+  },
   Query: {
     findProduct() {
       return product;
@@ -34,7 +51,7 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildFederatedSchema([
+  schema: buildSubgraphSchema([
     {
       typeDefs,
       resolvers,

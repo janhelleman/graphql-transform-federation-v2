@@ -1,6 +1,12 @@
-import { delegateToSchema, makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { delegateToSchema } from '@graphql-tools/delegate';
 import { ApolloServer } from 'apollo-server';
 import { transformSchemaFederation } from '../src/transform-federation';
+import {
+  GraphQLNamedType,
+  GraphQLOutputType,
+  OperationTypeNode,
+} from 'graphql';
 
 const products = [
   {
@@ -9,7 +15,16 @@ const products = [
   },
 ];
 
+const categories = [
+  {
+    id: '456',
+  },
+];
+
 interface ProductKey {
+  id: string;
+}
+interface CategoryKey {
   id: string;
 }
 
@@ -19,8 +34,13 @@ const schemaWithoutFederation = makeExecutableSchema({
       id: String!
       name: String!
     }
+
+    type Category {
+      id: ID!
+    }
     
     type Query {
+      categoryById(id: ID!): Category
       productById(id: String!): Product!
     }
   `,
@@ -29,6 +49,9 @@ const schemaWithoutFederation = makeExecutableSchema({
       productById(source, { id }: ProductKey) {
         return products.find((product) => product.id === id);
       },
+      categoryById(source, { id }: CategoryKey) {
+        return categories.find((category) => category.id === id);
+      },
     },
   },
 });
@@ -36,6 +59,11 @@ const schemaWithoutFederation = makeExecutableSchema({
 const federationSchema = transformSchemaFederation(schemaWithoutFederation, {
   Query: {
     extend: true,
+  },
+  Category: {
+    extend: false,
+    resolvable: false,
+    keyFields: ['id'],
   },
   Product: {
     extend: true,
@@ -48,13 +76,14 @@ const federationSchema = transformSchemaFederation(schemaWithoutFederation, {
     resolveReference(reference, context: { [key: string]: any }, info) {
       return delegateToSchema({
         schema: info.schema,
-        operation: 'query',
+        operation: OperationTypeNode.QUERY,
         fieldName: 'productById',
         args: {
           id: (reference as ProductKey).id,
         },
         context,
         info,
+        returnType: info.schema.getType('Product') as GraphQLOutputType,
       });
     },
   },

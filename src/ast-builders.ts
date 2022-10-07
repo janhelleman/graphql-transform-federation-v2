@@ -1,13 +1,16 @@
 import {
   NameNode,
   StringValueNode,
-  DirectiveNode,
-  ValueNode,
+  BooleanValueNode,
+  Kind,
+  ConstDirectiveNode,
+  ConstArgumentNode,
+  ConstValueNode,
 } from 'graphql/language';
 
 export function createNameNode(value: string): NameNode {
   return {
-    kind: 'Name',
+    kind: Kind.NAME,
     value,
   };
 }
@@ -17,22 +20,29 @@ export function createStringValueNode(
   block = false,
 ): StringValueNode {
   return {
-    kind: 'StringValue',
+    kind: Kind.STRING,
     value,
     block,
   };
 }
 
+export function createBooleanValueNode(value: boolean): BooleanValueNode {
+  return {
+    kind: Kind.BOOLEAN,
+    value,
+  };
+}
+
 export function createDirectiveNode(
   name: string,
-  directiveArguments: { [argumentName: string]: ValueNode } = {},
-): DirectiveNode {
+  directiveArguments: { [argumentName: string]: ConstValueNode } = {},
+): ConstDirectiveNode {
   return {
-    kind: 'Directive',
+    kind: Kind.DIRECTIVE,
     name: createNameNode(name),
     arguments: Object.entries(directiveArguments).map(
-      ([argumentName, value]) => ({
-        kind: 'Argument',
+      ([argumentName, value]): ConstArgumentNode => ({
+        kind: Kind.ARGUMENT,
         name: createNameNode(argumentName),
         value,
       }),

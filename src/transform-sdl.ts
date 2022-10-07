@@ -1,12 +1,18 @@
 import {
   FieldDefinitionNode,
+  Kind,
   ObjectTypeDefinitionNode,
   ObjectTypeExtensionNode,
   parse,
   print,
+  ValueNode,
   visit,
 } from 'graphql/language';
-import { createDirectiveNode, createStringValueNode } from './ast-builders';
+import {
+  createBooleanValueNode,
+  createDirectiveNode,
+  createStringValueNode,
+} from './ast-builders';
 import {
   FederationConfig,
   FederationFieldConfig,
@@ -14,9 +20,14 @@ import {
   FederationObjectConfig,
 } from './transform-federation';
 
-function createDirectiveWithFields(directiveName: string, fields: string) {
+function createDirectiveWithFields(
+  directiveName: string,
+  fields: string,
+  extra?: { [argumentName: string]: ValueNode },
+) {
   return createDirectiveNode(directiveName, {
     fields: createStringValueNode(fields),
+    ...(extra || {}),
   });
 }
 
@@ -40,9 +51,10 @@ function filterFieldsConfigToDo(
 
 function isObjectConfigToDo<TContext>({
   extend,
+  resolvable,
   keyFields,
 }: FederationObjectConfig<TContext>): boolean {
-  return Boolean((keyFields && keyFields.length) || extend);
+  return Boolean((keyFields && keyFields.length) || extend || resolvable);
 }
 
 export function addFederationAnnotations<TContext>(
@@ -78,18 +90,24 @@ export function addFederationAnnotations<TContext>(
         if (objectTypesTodo.has(currentObjectName)) {
           objectTypesTodo.delete(currentObjectName);
 
-          const { keyFields, extend } = federationConfig[currentObjectName];
+          const { keyFields, extend, resolvable } = federationConfig[
+            currentObjectName
+          ];
 
           const newDirectives = keyFields
             ? keyFields.map((keyField) =>
-                createDirectiveWithFields('key', keyField),
+                createDirectiveWithFields('key', keyField, {
+                  ...(resolvable === false
+                    ? { resolvable: createBooleanValueNode(resolvable) }
+                    : {}),
+                }),
               )
             : [];
 
           return {
             ...node,
             directives: [...(node.directives || []), ...newDirectives],
-            kind: extend ? 'ObjectTypeExtension' : node.kind,
+            kind: extend ? Kind.OBJECT_TYPE_EXTENSION : node.kind,
           };
         }
       },

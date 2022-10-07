@@ -18,7 +18,7 @@ describe('transform-sdl', () => {
     ).toEqual(dedent`
       type Product @keep @key(fields: "id") {
         id: Int
-      }\n`);
+      }`);
   });
 
   it('should throw an error if not all keys were added', () => {
@@ -59,7 +59,7 @@ describe('transform-sdl', () => {
     ).toEqual(dedent`
       extend type Product {
         id: Int
-      }\n`);
+      }`);
   });
 
   it('should add directive to fields', () => {
@@ -84,7 +84,7 @@ describe('transform-sdl', () => {
     ).toEqual(dedent`
       type Product {
         id: Int @external @provides(fields: "mock provides") @requires(fields: "a { query }")
-      }\n`);
+      }`);
   });
 
   it('should throw an error if not all external fields could get a directive', () => {

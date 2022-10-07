@@ -1,13 +1,15 @@
 import { ServerInfo } from 'apollo-server';
 
 const { ApolloServer } = require('apollo-server');
-const { ApolloGateway } = require('@apollo/gateway');
+const { ApolloGateway, IntrospectAndCompose } = require('@apollo/gateway');
 
 const gateway = new ApolloGateway({
-  serviceList: [
-    { name: 'transformed', url: 'http://localhost:4001/graphql' },
-    { name: 'extension', url: 'http://localhost:4002/graphql' },
-  ],
+  supergraphSdl: new IntrospectAndCompose({
+    subgraphs: [
+      { name: 'transformed', url: 'http://localhost:4001/graphql' },
+      { name: 'extension', url: 'http://localhost:4002/graphql' },
+    ],
+  }),
 });
 
 (async () => {
