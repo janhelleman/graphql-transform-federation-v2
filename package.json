@@ -1,5 +1,5 @@
 {
-  "name": "graphql-transform-federation",
+  "name": "graphql-transform-federation-v2",
   "version": "2.2.0",
   "description": "Add GraphQL federation to an existing GraphQL schema",
   "main": "dist/transform-federation.js",
@@ -27,7 +27,7 @@
   "author": "Ruben Oostinga",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0xR/graphql-transform-federation.git"
+    "url": "git+https://github.com/janhelleman/graphql-transform-federation-v2.git"
   },
   "license": "ISC",
   "devDependencies": {
