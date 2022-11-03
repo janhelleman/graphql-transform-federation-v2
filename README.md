@@ -1,4 +1,12 @@
-This is a modified version of [graphql-transform-federation](https://github.com/0xR/graphql-transform-federation) by user [0xR](https://github.com/0xR). This version is upgraded to use latest versions of [@graphql-tools](https://github.com/ardatan/graphql-tools) and [@apollo/gateway and @apollo/subgraph](https://github.com/apollographql/federation). This allows you to transform non-federated GraphQL services to GraphQL federation v2. I implemented "resolvable: false" feature for @key as an example. There's might still be issues, I haven't had time to test any edge cases. All credits due to 0xR. Code is as-is, pull requests are welcome.
+This is a modified version of
+[graphql-transform-federation](https://github.com/0xR/graphql-transform-federation)
+by user [0xR](https://github.com/0xR). This version is upgraded to use latest
+versions of [@graphql-tools](https://github.com/ardatan/graphql-tools) and
+[@apollo/gateway and @apollo/subgraph](https://github.com/apollographql/federation).
+This allows you to transform non-federated GraphQL services to GraphQL
+federation v2. I implemented "resolvable: false" feature for @key as an example.
+There's might still be issues, I haven't had time to test any edge cases. All
+credits due to 0xR. Code is as-is, pull requests are welcome.
 
 # graphql-transform-federation
 

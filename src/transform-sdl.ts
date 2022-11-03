@@ -90,9 +90,8 @@ export function addFederationAnnotations<TContext>(
         if (objectTypesTodo.has(currentObjectName)) {
           objectTypesTodo.delete(currentObjectName);
 
-          const { keyFields, extend, resolvable } = federationConfig[
-            currentObjectName
-          ];
+          const { keyFields, extend, resolvable } =
+            federationConfig[currentObjectName];
 
           const newDirectives = keyFields
             ? keyFields.map((keyField) =>

@@ -57,5 +57,12 @@
   },
   "dependencies": {
     "@graphql-tools/utils": "^8.12.0"
+  },
+  "bugs": {
+    "url": "https://github.com/janhelleman/graphql-transform-federation-v2/issues"
+  },
+  "homepage": "https://github.com/janhelleman/graphql-transform-federation-v2#readme",
+  "directories": {
+    "example": "example"
   }
 }
